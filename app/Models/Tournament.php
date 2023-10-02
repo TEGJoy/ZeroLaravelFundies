@@ -9,7 +9,9 @@ class Tournament extends Model
 {
     use HasFactory;
 
-    public function test(){
-
-    }
+    protected $fillabe = [
+        'name',
+        'max',
+        'is_active'
+    ];
 }

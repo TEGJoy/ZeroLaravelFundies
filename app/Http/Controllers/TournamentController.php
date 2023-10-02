@@ -10,7 +10,7 @@ class TournamentController extends Controller
      */
     public function index()
     {
-        //
+
     }
 
     /**
@@ -38,7 +38,7 @@ class TournamentController extends Controller
     }
     public function byGenre(int $genreId)
     {
-        $genre =
+
     }
     /**
      * Show the form for editing the specified resource.
