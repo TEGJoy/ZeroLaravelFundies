@@ -25,7 +25,7 @@ class TournamentController extends Controller
      */
     public function create()
     {
-        //
+        return view('tournaments.create');
     }
 
     /**
@@ -33,7 +33,11 @@ class TournamentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'max' => 'required|numeric',
+            'description' => 'required',
+        ]);
     }
 
     /**
