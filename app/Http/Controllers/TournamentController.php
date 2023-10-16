@@ -15,7 +15,11 @@ class TournamentController extends Controller
      */
     public function index(): View
     {
-        $tournaments = Tournament::latest()->paginate(5);
+        if (request('search')) {
+            $tournaments = Tournament::where('name', 'like', '%' . request('search') . '%')->get();
+        } else {
+            $tournaments = Tournament::latest()->paginate(5);
+        }
         //Voeg nog een totaal aantal signups toe.
         return view('tournaments.index', compact('tournaments'))
                 ->with('i', (request()->input('page', 1) - 1) * 5);
