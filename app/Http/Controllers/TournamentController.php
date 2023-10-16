@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
+use Auth;
 class TournamentController extends Controller
 {
     /**
@@ -36,8 +37,14 @@ class TournamentController extends Controller
         $request->validate([
             'name' => 'required',
             'max' => 'required|numeric',
-            'description' => 'required',
+            'description' => 'required|string',
+            'created_by' => 'numeric',
         ]);
+        $request['is_active'] = 1;
+        $request['created_by'] = Auth::user()->id;
+        Tournament::create($request->all());
+        return redirect()->route('tournaments.index')
+        ->with('success', 'Tournament created succesfully.');
     }
 
     /**
@@ -45,7 +52,8 @@ class TournamentController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $tournament = Tournament::find($id);
+        return view('tournaments.show', compact('tournament'));
     }
     public function byGenre(int $genreId)
     {
@@ -56,7 +64,8 @@ class TournamentController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $tournament = Tournament::find($id);
+        return view('tournaments.edit', compact('tournament'));
     }
 
     /**
@@ -64,7 +73,15 @@ class TournamentController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'name' => 'required|max:255',
+            'max' => 'required',
+            'description' => 'required|string',
+          ]);
+          $tournament = Tournament::find($id);
+          $tournament->update($request->all());
+          return redirect()->route('tournaments.index')
+            ->with('success', 'Tournament updated successfully.');
     }
 
     /**
@@ -72,7 +89,10 @@ class TournamentController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $tournament = Tournament::find($id);
+        $tournament->delete();
+        return redirect()->route('tournaments.index')
+          ->with('success', 'Tournament deleted successfully.');
     }
     public function byGame(string $game){
         /* Pseudo-code

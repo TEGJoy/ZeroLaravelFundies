@@ -21,7 +21,7 @@
         <tr>
             <td>{{ ++$i }}</td>
             <td>{{ $tournament->name }}</td>
-            <td>{{ $tournament->detail }}</td>
+            <td>{{ $tournament->max }}</td>
             <td>
                 <form action="{{ route('tournaments.destroy',$tournament->id) }}" method="POST">
                     <a class="btn btn-info" href="{{ route('tournaments.show',$tournament->id) }}">Show</a>

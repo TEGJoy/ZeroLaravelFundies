@@ -12,6 +12,8 @@ class Tournament extends Model
     protected $fillable = [
         'name',
         'max',
-        'is_active'
+        'is_active',
+        'description',
+        'created_by',
     ];
 }
