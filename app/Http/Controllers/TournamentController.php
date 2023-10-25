@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tournament;
+use App\Models\WaitingList;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -32,7 +33,6 @@ class TournamentController extends Controller
     public function index(): View
     {
         $superUser = $this->superUser();
-        dd($superUser);
         if (request('search')) {
             $tournaments = Tournament::where('name', 'like', '%' . request('search') . '%')->get();
         } else {
@@ -116,6 +116,7 @@ class TournamentController extends Controller
         return redirect()->route('tournaments.index')
           ->with('success', 'Tournament deleted successfully.');
     }
+    
     public function byGame(string $game){
         /* Pseudo-code
         $tournament = Tournament::find($game)

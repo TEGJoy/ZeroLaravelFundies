@@ -9,5 +9,8 @@ class WaitingList extends Model
 {
     use HasFactory;
 
-
+    protected $fillable = [
+        'user_id',
+        'tournament_id',
+    ];
 }

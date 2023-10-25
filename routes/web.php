@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TournamentController;
+use App\Http\Controllers\WaitingListController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,11 +14,12 @@ use App\Http\Controllers\TournamentController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+
 
 Auth::routes();
 
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::resource('tournaments', TournamentController::class);
+Route::get('/tournaments/{tournament}/join', [WaitingListController::class, 'join'])->name('tournaments.join');
+Route::post('/tournaments/{tournament}/joinHandler', [WaitingListController::class, 'joinHandler'])->name('tournaments.joinHandler');

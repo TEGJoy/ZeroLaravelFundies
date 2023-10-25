@@ -42,7 +42,8 @@
                 <form action="{{ route('tournaments.destroy',$tournament->id) }}" method="POST">
                     <a class="btn btn-info" href="{{ route('tournaments.show',$tournament->id) }}">Show</a>
                     @auth
-                    @if(Auth::user()->is_admin)
+                    @if(Auth::user())
+                    <a class="btn btn-primary" href="{{ route('tournaments.join',$tournament->id) }}">Join</a>
                     <a class="btn btn-primary" href="{{ route('tournaments.edit',$tournament->id) }}">Edit</a>
                     @csrf
                     @method('DELETE')
