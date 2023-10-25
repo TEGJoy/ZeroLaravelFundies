@@ -1,9 +1,12 @@
 @extends('layouts.app')
 @section('content')
+@if(!Auth::user()->is_admin)
+<p>Je mag hier niet zijn, donder op</p>
+@else
     <div class="row">
         <div class="col-lg-12 margin-tb">
             <div class="pull-left">
-                <h2>Tourney overview</h2>
+                <h2>Admin overview</h2>
             </div>
             @if (Session::has('success'))
             <div class="alert alert-success">
@@ -52,18 +55,15 @@
             <td>
                 <form action="{{ route('tournaments.destroy',$tournament->id) }}" method="POST">
                     <a class="btn btn-info" href="{{ route('tournaments.show',$tournament->id) }}">Show</a>
-                    @auth
                     <a class="btn btn-primary" href="{{ route('tournaments.join',$tournament->id) }}">Join</a>
-                    @if(Auth::user()->is_admin)
                     <a class="btn btn-primary" href="{{ route('tournaments.edit',$tournament->id) }}">Edit</a>
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger">Delete</button>
-                    @endif
-                    @endauth
                 </form>
             </td>
         </tr>
         @endforeach
     </table>
+@endif
 @endsection

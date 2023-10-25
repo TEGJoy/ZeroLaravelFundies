@@ -21,7 +21,7 @@ class WaitingListController extends Controller
         $joined = $this->checkJoined($userId, $tournamentId);
         if($joined){
             return redirect()->route('tournaments.index')
-            ->with('failed', 'Already joined tournament.');
+            ->with('error', 'Already joined tournament.');
         }
         $request['user_id'] = $userId;
         $request['tournament_id'] = $tournamentId;

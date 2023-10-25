@@ -40,7 +40,8 @@ class TournamentController extends Controller
         }
         //Voeg nog een totaal aantal signups toe.
         return view('tournaments.index', compact('tournaments'))
-                ->with('i', (request()->input('page', 1) - 1) * 5);
+                ->with('i', (request()->input('page', 1) - 1) * 5)
+                ->with(compact('superUser'));
     }
 
     /**
@@ -116,7 +117,7 @@ class TournamentController extends Controller
         return redirect()->route('tournaments.index')
           ->with('success', 'Tournament deleted successfully.');
     }
-    
+
     public function byGame(string $game){
         /* Pseudo-code
         $tournament = Tournament::find($game)
