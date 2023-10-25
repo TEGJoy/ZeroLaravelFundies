@@ -5,9 +5,13 @@
             <div class="pull-left">
                 <h2>Tourney overview</h2>
             </div>
+            @auth
+            @if(Auth::user()->is_admin)
             <div class="pull-right">
                 <a class="btn btn-success" href="{{ route('tournaments.create') }}"> Create New tournament</a>
             </div>
+            @endif
+            @endauth
         </div>
     </div>
     <form action="{{ route('tournaments.index') }}" method="GET" role="search">
@@ -37,12 +41,14 @@
             <td>
                 <form action="{{ route('tournaments.destroy',$tournament->id) }}" method="POST">
                     <a class="btn btn-info" href="{{ route('tournaments.show',$tournament->id) }}">Show</a>
+                    @auth
                     @if(Auth::user()->is_admin)
                     <a class="btn btn-primary" href="{{ route('tournaments.edit',$tournament->id) }}">Edit</a>
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger">Delete</button>
                     @endif
+                    @endauth
                 </form>
             </td>
         </tr>

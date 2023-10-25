@@ -10,11 +10,29 @@ use Illuminate\View\View;
 use Auth;
 class TournamentController extends Controller
 {
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+
+    }
+
+    public function superUser(){
+        return Tournament::join('users', 'tournaments.created_by', '=', 'users.id')
+        ->where('users.id','=',auth()->id())
+        ->count();
+    }
     /**
      * Display a listing of the resource.
      */
     public function index(): View
     {
+        $superUser = $this->superUser();
+        dd($superUser);
         if (request('search')) {
             $tournaments = Tournament::where('name', 'like', '%' . request('search') . '%')->get();
         } else {

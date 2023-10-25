@@ -9,7 +9,5 @@ class WaitingList extends Model
 {
     use HasFactory;
 
-    public function Tournament(){
 
-    }
 }
