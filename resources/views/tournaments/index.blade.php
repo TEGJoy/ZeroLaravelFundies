@@ -1,4 +1,4 @@
-@extends('tournaments.layout')
+@extends('layouts.app')
 @section('content')
     <div class="row">
         <div class="col-lg-12 margin-tb">
@@ -37,10 +37,12 @@
             <td>
                 <form action="{{ route('tournaments.destroy',$tournament->id) }}" method="POST">
                     <a class="btn btn-info" href="{{ route('tournaments.show',$tournament->id) }}">Show</a>
+                    @if(Auth::user()->is_admin)
                     <a class="btn btn-primary" href="{{ route('tournaments.edit',$tournament->id) }}">Edit</a>
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger">Delete</button>
+                    @endif
                 </form>
             </td>
         </tr>
