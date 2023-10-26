@@ -36,11 +36,12 @@ class TournamentController extends Controller
         if (request('search')) {
             $tournaments = Tournament::where('name', 'like', '%' . request('search') . '%')->get();
         } else {
-            $tournaments = Tournament::latest()->paginate(5);
+            $tournaments = Tournament::all()
+            ->where('is_active','=','1');
         }
         //Voeg nog een totaal aantal signups toe.
         return view('tournaments.index', compact('tournaments'))
-                ->with('i', (request()->input('page', 1) - 1) * 5)
+                ->with('i')
                 ->with(compact('superUser'));
     }
 
@@ -78,17 +79,19 @@ class TournamentController extends Controller
         $tournament = Tournament::find($id);
         return view('tournaments.show', compact('tournament'));
     }
-    public function byGenre(int $genreId)
-    {
-
-    }
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)
     {
         $tournament = Tournament::find($id);
-        return view('tournaments.edit', compact('tournament'));
+        if ($tournament->created_by === auth()->id() || Auth::user()->is_admin) {
+            return view('tournaments.edit', compact('tournament'));
+        }
+        else{
+            return redirect()->route('tournaments.index')
+            ->with('error', 'Dit is niet jouw toernooi.');
+        }
     }
 
     /**
@@ -101,9 +104,15 @@ class TournamentController extends Controller
             'max' => 'required',
             'description' => 'required|string',
           ]);
-          $tournament = Tournament::find($id);
-          $tournament->update($request->all());
-          return redirect()->route('tournaments.index')
+        $tournament = Tournament::find($id);
+        if ($tournament->created_by === auth()->id() || Auth::user()->is_admin) {
+            $tournament->update($request->all());
+        }
+        else{
+            return redirect()->route('tournaments.index')
+            ->with('error', 'Dit is niet jouw toernooi.');
+        }
+          return redirect()->back()
             ->with('success', 'Tournament updated successfully.');
     }
 
@@ -114,7 +123,7 @@ class TournamentController extends Controller
     {
         $tournament = Tournament::find($id);
         $tournament->delete();
-        return redirect()->route('tournaments.index')
+        return redirect()->back()
           ->with('success', 'Tournament deleted successfully.');
     }
 

@@ -1,8 +1,5 @@
 @extends('layouts.app')
 @section('content')
-@if(!Auth::user()->is_admin)
-<p>Je mag hier niet zijn, donder op</p>
-@else
     <div class="row">
         <div class="col-lg-12 margin-tb">
             <div class="pull-left">
@@ -18,14 +15,9 @@
                     <h2>{!! Session::get('error') !!}</h2>
                 </div>
             @endif
-            @auth
-            @if($superUser > 10)
-            @elseif(Auth::user()->is_admin)
             <div class="pull-right">
                 <a class="btn btn-success" href="{{ route('tournaments.create') }}"> Create New tournament</a>
             </div>
-            @endif
-            @endauth
         </div>
     </div>
     <form action="{{ route('tournaments.index') }}" method="GET" role="search">
@@ -65,5 +57,4 @@
         </tr>
         @endforeach
     </table>
-@endif
 @endsection

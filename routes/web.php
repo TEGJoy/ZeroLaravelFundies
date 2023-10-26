@@ -25,3 +25,4 @@ Route::resource('tournaments', TournamentController::class);
 Route::get('/tournaments/{tournament}/join', [WaitingListController::class, 'join'])->name('tournaments.join');
 Route::post('/tournaments/{tournament}/joinHandler', [WaitingListController::class, 'joinHandler'])->name('tournaments.joinHandler');
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/waitinglist', [WaitingListController::class, 'index'])->name('waitinglist');

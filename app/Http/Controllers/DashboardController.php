@@ -11,6 +11,17 @@ use Auth;
 use App\Models\WaitingList;
 class DashboardController extends Controller
 {
+        /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+
     public function superUser(){
         return Waitinglist::where('user_id', '=', auth()->id())
         ->count();
@@ -27,13 +38,19 @@ class DashboardController extends Controller
             ->get();
         } else if(!Auth::user()->is_admin) {
             $tournaments = Tournament::latest()->paginate(5)
-            ->where('user_id', '=', auth()->id());
+            ->where('created_by', '=', auth()->id());
         } else{
             $tournaments = Tournament::latest()->paginate(5);
         }
+        if(Auth::user()->is_admin){
         //Voeg nog een totaal aantal signups toe.
         return view('dashboards.index', compact('tournaments'))
                 ->with('i', (request()->input('page', 1) - 1) * 5)
                 ->with(compact('superUser'));
+        } else{
+            return view('dashboards.user', compact('tournaments'))
+                ->with('i', (request()->input('page', 1) - 1) * 5)
+                ->with(compact('superUser'));
+        }
     }
 }

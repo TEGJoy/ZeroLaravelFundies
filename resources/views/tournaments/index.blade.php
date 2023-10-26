@@ -54,12 +54,6 @@
                     <a class="btn btn-info" href="{{ route('tournaments.show',$tournament->id) }}">Show</a>
                     @auth
                     <a class="btn btn-primary" href="{{ route('tournaments.join',$tournament->id) }}">Join</a>
-                    @if(Auth::user()->is_admin)
-                    <a class="btn btn-primary" href="{{ route('tournaments.edit',$tournament->id) }}">Edit</a>
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger">Delete</button>
-                    @endif
                     @endauth
                 </form>
             </td>
