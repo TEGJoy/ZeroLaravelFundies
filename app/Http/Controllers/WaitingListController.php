@@ -13,6 +13,16 @@ use Auth;
 use DB;
 class WaitingListController extends Controller
 {
+         /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index(){
         /* Originele query
         SELECT DISTINCT c.ID, c.name FROM `waiting_lists` as a
@@ -26,10 +36,19 @@ class WaitingListController extends Controller
         */
         if (request('search')) {
             $tournamentWaitingLists = DB::table('waiting_lists')
-            ->distinct()
+            ->select('waiting_lists.id', 'waiting_lists.id as signID', 'waiting_lists.tournament_id', 'users.id', 'users.name', 'tournaments.name as tournament_name')
+            ->join('users', 'users.id', '=', 'waiting_lists.user_id')
             ->join('tournaments', 'tournaments.id', '=', 'waiting_lists.tournament_id')
-            ->where('waiting_lists.is_active', '=', 1)
+            ->where('tournaments.is_active', '=', 1)
             ->where('tournaments.name','like', '%' . request('search') . '%')
+            ->get();
+        } else if(!Auth::user()->is_admin) {
+            $tournamentWaitingLists = DB::table('waiting_lists')
+            ->select('waiting_lists.id', 'waiting_lists.id as signID', 'waiting_lists.tournament_id', 'users.id', 'users.name', 'tournaments.name as tournament_name')
+            ->join('users', 'users.id', '=', 'waiting_lists.user_id')
+            ->join('tournaments', 'tournaments.id', '=', 'waiting_lists.tournament_id')
+            ->where('tournaments.is_active', '=', 1)
+            ->where('waiting_lists.user_id', '=', auth()->id())
             ->get();
         } else {
             $tournamentWaitingLists = DB::table('waiting_lists')
@@ -59,8 +78,43 @@ class WaitingListController extends Controller
             SELECT a.id as signID, a.tournament_id, b.id, b.name FROM `waiting_lists` as a JOIN users as b ON a.user_id = b.id JOIN tournaments as c ON a.tournament_id = c.id WHERE c.is_active = 1 AND c.name = 'Dnf Duel'
         */
         //Voeg nog een totaal aantal signups toe.
-        return view('waitinglists.index', compact('tournamentWaitingLists'))
+        if(Auth::user()->is_admin){
+        return view('waitinglists.admin', compact('tournamentWaitingLists'))
                 ->with('i');
+        } else {
+            return view('waitinglists.index', compact('tournamentWaitingLists'))
+            ->with('i');
+        }
+    }
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        $tournamentSpecifics = DB::table('waiting_lists')
+        ->select('waiting_lists.id', 'waiting_lists.id as signID', 'waiting_lists.tournament_id', 'users.id', 'users.name', 'tournaments.name as tournament_name')
+        ->join('users', 'users.id', '=', 'waiting_lists.user_id')
+        ->join('tournaments', 'tournaments.id', '=', 'waiting_lists.tournament_id')
+        ->where('tournaments.is_active', '=', 1)
+        ->where('tournaments.id', '=', $id)
+        ->get();
+        return view('waitinglists.show', compact('tournamentSpecifics'));
+    }
+     /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        $waitinglist = WaitingList::find($id);
+        if ($waitinglist->user_id === auth()->id() || Auth::user()->is_admin) {
+            $waitinglist->delete();
+        }
+        else{
+            return redirect()->back()
+            ->with('error', 'Jij mag niet iemand anders uitschrijven lol.');
+        }
+        return redirect()->back()
+          ->with('success', 'Removed successfully.');
     }
     public function join(string $id){
         $tournament = Tournament::find($id);
@@ -87,12 +141,5 @@ class WaitingListController extends Controller
         if($checkJoined > 0){
             return true;
         }
-    }
-    public function getTournamentName($id){
-        $tournament = DB::table('tournaments')
-        ->select('name as tournament')
-        ->where('id','=',$id)
-        ->get();
-        return $tournament;
     }
 }

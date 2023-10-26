@@ -20,7 +20,7 @@
             </div>
         </div>
     </div>
-    <form action="{{ route('tournaments.index') }}" method="GET" role="search">
+    <form action="{{ route('dashboard') }}" method="GET" role="search">
         <b>Search Tourneys</b>
           {{ csrf_field() }}
           <div class="input-group">

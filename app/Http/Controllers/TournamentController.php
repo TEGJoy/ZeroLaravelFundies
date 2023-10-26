@@ -122,7 +122,13 @@ class TournamentController extends Controller
     public function destroy(string $id)
     {
         $tournament = Tournament::find($id);
-        $tournament->delete();
+        if ($tournament->created_by === auth()->id() || Auth::user()->is_admin) {
+            $tournament->delete();
+        }
+        else{
+            return redirect()->route('tournaments.index')
+            ->with('error', 'Dit is niet jouw toernooi.');
+        }
         return redirect()->back()
           ->with('success', 'Tournament deleted successfully.');
     }

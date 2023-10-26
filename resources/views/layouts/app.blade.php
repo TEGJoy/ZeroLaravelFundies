@@ -32,9 +32,13 @@
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('tournaments.index') }}">Tournament overview</a>
-                          </li>
+                        </li>
+                        @if (Auth::user())
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('waitinglist.index') }}">Waitinglist</a>
+                        </li>
+                        @endif
                     </ul>
-
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
                         <!-- Authentication Links -->

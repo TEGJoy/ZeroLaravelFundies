@@ -30,7 +30,7 @@
           </div>
       </form>
     <div class="pull-left">
-        <h2>{{ Auth::user()->name}} 's WaitingList</h2>
+        <h2>{{ Auth::user()->name}} 's  Admin WaitingList</h2>
         <table class="table table-bordered">
             <tr>
                 <th>No</th>
