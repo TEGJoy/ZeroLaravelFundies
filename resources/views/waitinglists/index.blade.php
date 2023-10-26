@@ -26,16 +26,13 @@
                 <th>Player Name</th>
                 <th width="280px">Action</th>
             </tr>
-            @foreach($tournamentWaitingListMerged as $tournament)
-                {{ $tournament[0]->tournament_name }}
-
+            @foreach($tournamentWaitingLists as $tournament)
             <tr>
                 <td>{{ ++$i }}</td>
-                <td>{{ $tournament[0]->tournament_name}}
-                <td>{{ $tournament[0]->name || $tournament[1]->name}}</td>
+                <td>{{ $tournament->tournament_name}}
+                <td>{{ $tournament->name }}</td>
             </tr>
             @endforeach
-            {{dd($tournamentWaitingListMerged)}}
         </table>
     </div>
 @endsection

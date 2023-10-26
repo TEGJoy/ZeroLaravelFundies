@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
+use Illuminate\Support\Collection;
 use Auth;
 use DB;
 class WaitingListController extends Controller
@@ -24,20 +25,22 @@ class WaitingListController extends Controller
             ORDER BY c.name
         */
         if (request('search')) {
-            $uniqueTournaments = DB::table('waiting_lists')
+            $tournamentWaitingLists = DB::table('waiting_lists')
             ->distinct()
             ->join('tournaments', 'tournaments.id', '=', 'waiting_lists.tournament_id')
             ->where('waiting_lists.is_active', '=', 1)
             ->where('tournaments.name','like', '%' . request('search') . '%')
             ->get();
         } else {
-            $uniqueTournaments = DB::table('waiting_lists')
-            ->select('tournaments.name', 'tournaments.name as name', 'tournaments.id')
+            $tournamentWaitingLists = DB::table('waiting_lists')
+            ->select('waiting_lists.id', 'waiting_lists.id as signID', 'waiting_lists.tournament_id', 'users.id', 'users.name', 'tournaments.name as tournament_name')
+            ->join('users', 'users.id', '=', 'waiting_lists.user_id')
             ->join('tournaments', 'tournaments.id', '=', 'waiting_lists.tournament_id')
             ->where('tournaments.is_active', '=', 1)
-            ->groupBy('tournaments.name', 'tournaments.id')
             ->get();
         }
+       /*
+        $i = 0;
         foreach($uniqueTournaments as $uniqueTournament){
             $tournamentWaitingList = DB::table('waiting_lists')
             ->select('waiting_lists.id', 'waiting_lists.id as signID', 'waiting_lists.tournament_id', 'users.id', 'users.name', 'tournaments.name as tournament_name')
@@ -47,14 +50,16 @@ class WaitingListController extends Controller
             ->where('tournaments.name', '=', $uniqueTournament->name)
             ->get();
 
-            $tournamentWaitingListMerged[] = $tournamentWaitingList;
+            $tournamentWaitingLists = $tournamentWaitingListsEmpty->mergeRecursive($tournamentWaitingList);
+
         }
-        //dd($tournamentWaitingListMerged);
+        dd($tournamentWaitingLists);
+        */
         /* tweede originele query
             SELECT a.id as signID, a.tournament_id, b.id, b.name FROM `waiting_lists` as a JOIN users as b ON a.user_id = b.id JOIN tournaments as c ON a.tournament_id = c.id WHERE c.is_active = 1 AND c.name = 'Dnf Duel'
         */
         //Voeg nog een totaal aantal signups toe.
-        return view('waitinglists.index', compact('tournamentWaitingListMerged'))
+        return view('waitinglists.index', compact('tournamentWaitingLists'))
                 ->with('i');
     }
     public function join(string $id){
