@@ -23,8 +23,7 @@ class TournamentController extends Controller
     }
 
     public function superUser(){
-        return Tournament::join('users', 'tournaments.created_by', '=', 'users.id')
-        ->where('users.id','=',auth()->id())
+        return Waitinglist::where('user_id', '=', auth()->id())
         ->count();
     }
     /**
