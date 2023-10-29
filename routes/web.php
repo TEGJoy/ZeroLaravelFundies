@@ -24,7 +24,9 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::resource('tournaments', TournamentController::class);
 Route::get('/tournaments/{tournament}/join', [WaitingListController::class, 'join'])->name('tournaments.join');
 Route::post('/tournaments/{tournament}/joinHandler', [WaitingListController::class, 'joinHandler'])->name('tournaments.joinHandler');
+Route::put('/tournaments/{tournament}/setState',[TournamentController::class, 'setState'])->name('tournaments.setState');
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/dashboard/showAll', [DashboardController::class, 'showAll'])->name('dashboard.showAll');
 Route::get('/waitinglist', [WaitingListController::class, 'index'])->name('waitinglist.index');
 Route::delete('waitinglist/{waitinglist}', [WaitingListController::class, 'destroy'])->name('waitinglist.destroy');
 Route::get('/waitinglist/{waitinglist}', [WaitingListController::class, 'show'])->name('waitinglist.show');

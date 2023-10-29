@@ -15,14 +15,6 @@
                     <h2>{!! Session::get('error') !!}</h2>
                 </div>
             @endif
-            @auth
-            @if($superUser > 10)
-            @elseif(Auth::user()->is_admin)
-            <div class="pull-right">
-                <a class="btn btn-success" href="{{ route('tournaments.create') }}"> Create New tournament</a>
-            </div>
-            @endif
-            @endauth
         </div>
     </div>
     <form action="{{ route('tournaments.index') }}" method="GET" role="search">

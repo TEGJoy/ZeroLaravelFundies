@@ -20,6 +20,11 @@
             </div>
         </div>
     </div>
+    @if($showInactive == 0)
+    <button type="button" onclick="window.location='{{ url("dashboard/showAll") }}'">Show all tournaments</button>
+    @else
+    <button type="button" onclick="window.location='{{ url("dashboard") }}'">Show active tournaments</button>
+    @endif
     <form action="{{ route('dashboard') }}" method="GET" role="search">
         <b>Search Tourneys</b>
           {{ csrf_field() }}
@@ -45,13 +50,17 @@
             <td>{{ $tournament->name }}</td>
             <td>{{ $tournament->max }}</td>
             <td>
-                <form action="{{ route('tournaments.destroy',$tournament->id) }}" method="POST">
+                <form action="{{ route('tournaments.setState',$tournament->id) }}" method="POST">
                     <a class="btn btn-info" href="{{ route('tournaments.show',$tournament->id) }}">Show</a>
                     <a class="btn btn-primary" href="{{ route('tournaments.join',$tournament->id) }}">Join</a>
                     <a class="btn btn-primary" href="{{ route('tournaments.edit',$tournament->id) }}">Edit</a>
                     @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger">Delete</button>
+                    @method('PUT')
+                    @if($tournament->is_active == 1)
+                    <button type="submit" class="btn btn-danger">Set inactive</button>
+                    @elseif($tournament->is_active == 0)
+                    <button type="submit" class="btn btn-danger">Set active</button>
+                    @endif
                 </form>
             </td>
         </tr>

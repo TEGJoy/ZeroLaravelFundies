@@ -33,7 +33,7 @@ class TournamentController extends Controller
      */
     public function index(): View
     {
-        $superUser = $this->superUser();
+        //$superUser = $this->superUser();
         if (request('search')) {
             $tournaments = Tournament::where('name', 'like', '%' . request('search') . '%')->where('is_active','=','1')->get();
         } else {
@@ -42,8 +42,7 @@ class TournamentController extends Controller
         }
         //Voeg nog een totaal aantal signups toe.
         return view('tournaments.index', compact('tournaments'))
-                ->with('i')
-                ->with(compact('superUser'));
+                ->with('i');
     }
 
     /**
@@ -133,7 +132,27 @@ class TournamentController extends Controller
         return redirect()->back()
           ->with('success', 'Tournament set inactive successfully.');
     }
-
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function setState(string $id)
+    {
+        $tournament = Tournament::find($id);
+        if ($tournament->created_by === auth()->id() || Auth::user()->is_admin) {
+            if($tournament->is_active == 0){
+                $tournament->update(['is_active' => 1]);
+            }
+            else{
+                $tournament->update(['is_active' => 0]);
+            }
+        }
+        else{
+            return redirect()->route('tournaments.index')
+            ->with('error', 'Dit is niet jouw toernooi.');
+        }
+        return redirect()->back()
+          ->with('success', 'Tournament state changed successfully.');
+    }
     public function byGame(string $game){
         /* Pseudo-code
         $tournament = Tournament::find($game)
