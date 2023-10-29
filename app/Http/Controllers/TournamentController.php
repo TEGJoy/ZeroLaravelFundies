@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Tournament;
 use App\Models\WaitingList;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
 use Auth;
+use Carbon\Carbon;
 class TournamentController extends Controller
 {
 
@@ -23,8 +25,8 @@ class TournamentController extends Controller
     }
 
     public function superUser(){
-        return Waitinglist::where('user_id', '=', auth()->id())
-        ->count();
+        return Waitinglist::where('user_id', '=',Auth::user()->id)->
+        with('tournaments')->count();
     }
     /**
      * Display a listing of the resource.
@@ -33,7 +35,7 @@ class TournamentController extends Controller
     {
         $superUser = $this->superUser();
         if (request('search')) {
-            $tournaments = Tournament::where('name', 'like', '%' . request('search') . '%')->get();
+            $tournaments = Tournament::where('name', 'like', '%' . request('search') . '%')->where('is_active','=','1')->get();
         } else {
             $tournaments = Tournament::all()
             ->where('is_active','=','1');
@@ -122,14 +124,14 @@ class TournamentController extends Controller
     {
         $tournament = Tournament::find($id);
         if ($tournament->created_by === auth()->id() || Auth::user()->is_admin) {
-            $tournament->delete();
+            $tournament->update(['is_active' => 0]);
         }
         else{
             return redirect()->route('tournaments.index')
             ->with('error', 'Dit is niet jouw toernooi.');
         }
         return redirect()->back()
-          ->with('success', 'Tournament deleted successfully.');
+          ->with('success', 'Tournament set inactive successfully.');
     }
 
     public function byGame(string $game){

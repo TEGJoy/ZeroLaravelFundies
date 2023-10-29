@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\WaitingList;
+use App\Models\Tournament;
+
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -44,10 +46,10 @@ class User extends Authenticatable
     ];
     public function tournaments()
     {
-        return $this->belongsTo(Tournament::class, 'created_by');
+        return $this->hasMany(Tournament::class, 'created_by');
     }
     public function waitinglists()
     {
-        return $this->belongsTo(Waitinglist::class, 'user_id');
+        return $this->belongsTo(WaitingList::class, 'user_id');
     }
 }

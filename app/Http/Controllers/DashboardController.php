@@ -35,21 +35,23 @@ class DashboardController extends Controller
         if (request('search')) {
             $tournaments = Tournament::where('name', 'like', '%' . request('search') . '%')
             ->where('user_id', '=', auth()->id())
+            ->where('is_active','=','1')
             ->get();
         } else if(!Auth::user()->is_admin) {
-            $tournaments = Tournament::latest()->paginate(5)
-            ->where('created_by', '=', auth()->id());
+            $tournaments = Tournament::all()
+            ->where('created_by', '=', auth()->id())
+            ->where('is_active','=','1');
         } else{
-            $tournaments = Tournament::latest()->paginate(5);
+            $tournaments = Tournament::all();
         }
         if(Auth::user()->is_admin){
         //Voeg nog een totaal aantal signups toe.
         return view('dashboards.index', compact('tournaments'))
-                ->with('i', (request()->input('page', 1) - 1) * 5)
+                ->with('i')
                 ->with(compact('superUser'));
         } else{
             return view('dashboards.user', compact('tournaments'))
-                ->with('i', (request()->input('page', 1) - 1) * 5)
+                ->with('i')
                 ->with(compact('superUser'));
         }
     }
